@@ -1,32 +1,25 @@
-package equ.cjc.springcollageapplication.serviceI;
+package equ.cjc.StudentManagement.service;
+
 
 import java.util.List;
 
+import equ.cjc.StudentManagement.model.Student;
 
-import equ.cjc.springcollageapplication.Model.Collage;
+public interface Studentservice
+{
 
-public interface CollageserviceI {
-
-	public void saveCollage(Collage c);
-
+	void saveData(Student s);
+	  List<Student> getAllStudents();
+	 
 	
-
-	public List<Collage> logieCollage(String username, String password);
-
-
-
-	public List<Collage> pagingCollage(int pageNo);
-
-
-
-	public List<Collage> deleteStudent(int rollno);
-
-
-
-	public Collage editStudent(int rollno);
-
-
-
-	public List<Collage> updateCollage(Collage c);
+	Student getsingleStudent(int studentId);
+	
+	void updateStudentFess(int studentId, double ammount);
+	List<Student> getStudentByBatch(String batchNumber);
+	//void updatebatchMode(String batchMode, String batchMode2);
+	//void updatebatchMode(String batchNumber, String batchNumber1);
+	void updatebatchNumber(int studentId, String batchNumber);
+	
+	
 
 }
