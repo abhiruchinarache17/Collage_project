@@ -1,4 +1,4 @@
-package equ.cjc.springcollageapplication.Controller;
+package equ.cjc.StudentManagement.controller;
 
 import java.util.List;
 
@@ -9,95 +9,99 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
-
-import equ.cjc.springcollageapplication.Model.Collage;
-import equ.cjc.springcollageapplication.serviceI.CollageserviceI;
-
-
+import equ.cjc.StudentManagement.model.Student;
+import equ.cjc.StudentManagement.service.Studentservice;
 
 
 
 @Controller
-public class HomeController 
+public class AdminController
 {
-	
 	@Autowired
-	CollageserviceI cci;
-	
+	private Studentservice ss;
 	@RequestMapping("/")
-	public String prelogin()
+	public String preLogin()
 	{
 		return "login";
+		
 	}
 	
-	
-	@RequestMapping("/openreg")
-	public String preRegister()
+	@RequestMapping("/login")
+	public String loginStudent(@RequestParam("username") String username,@RequestParam("password") String password,Model m)
 	{
-		return "register";
+		if(username.equals("ADMIN") && password.equals("ADMIN"))
+		{
+			List<Student> list=ss.getAllStudents();
+			m.addAttribute("data", list);
+			
+			return "adminscreen";	
+			
+		} else {
+			m.addAttribute( "msg","username & password");
+			return "login";
+			
+		}
+		
+		
 		
 	}
-	
-	 @RequestMapping("/save")
-		public String saveCollage(@ModelAttribute Collage c )
-		{
-			 cci.saveCollage(c);
-			return "login";
-		}
-	 
-	 @RequestMapping("log")
-		public String loginStudent(@RequestParam("username")String username,@RequestParam("password")String password,Model m)
-		{
-			List<Collage> list=cci.logieCollage(username,password);
-			if(!list.isEmpty())
-			{
-				m.addAttribute("data",list);
-			return "success" ;
-			}
-			else 
-			{
-			return "login";
-			
-		}
-		}
-	 @RequestMapping("/paging")
-		public String paging(@RequestParam("pageNo")int pageNo,Model m)
-		{
-			List<Collage> list=cci.pagingCollage(pageNo);
-			m.addAttribute("data",list);
-			
-			return "success";
-			
-		}
-		
-		@RequestMapping("/delete")
-		public String deleteStudent(@RequestParam("rollno") int rollno,Model m)
-		{
-			List<Collage> list=cci.deleteStudent(rollno);
-			m.addAttribute("data",list);
-			return "success";
-			
-		}
-		@RequestMapping("/edit")
-		public String editStudent(@RequestParam("rollno") int rollno,Model m)
-		{
-			Collage s= cci.editStudent(rollno);
-			m.addAttribute("stu", s);
-			return "edit";
-			
-		}
-		@RequestMapping("/update")
-		public String updateStudent(@ModelAttribute Collage c,Model m)
-		{
-			List<Collage> list=cci.updateCollage(c);
-			m.addAttribute("data", list);
-			return "success";
-			
-		
-	 
-	
 	
 
-		}		
+	@RequestMapping("/enroll_student")
+	public String saveStudent(@ModelAttribute Student s)
+	{
+		ss.saveData(s);
+		
+		
+		
+		return "adminscreen";
+		
+	}
+	
+	@RequestMapping("/search")
+	public String getBatchStudent(@RequestParam("batchNumber") String batchNumber,Model m )
+	{
+		List<Student> list=ss.getStudentByBatch(batchNumber);
+		if(list.size()>0)
+		{
+			m.addAttribute("data",list);
+			return "adminscreen";
+		}
+		else {
+			List<Student> list1 =ss.getAllStudents();
+		m.addAttribute("data", list1);
+		m.addAttribute("message", "No records are available for the batch"+batchNumber+"..");
+		}
+		return "adminscreen";
+		
+		
+	}
+	@RequestMapping("/fess")
+	public String onfess(@RequestParam ("id") int studentId,Model m)
+	{
+		Student s=ss.getsingleStudent(studentId);
+		m.addAttribute("st", s);
+		return "fess";
+		
+	}
+	@RequestMapping("/payfess")
+	public String payfess(@RequestParam("studentid")int studentId,@RequestParam("ammount") double ammount,Model m)
+	{
+		ss.updateStudentFess(studentId,ammount);
+		List<Student> list=ss.getAllStudents();
+		m.addAttribute("data", list);
+		return "adminscreen";
+		
+	}
+	@RequestMapping("/shift-Batch")
+	public String shiftbatch(@RequestParam("studentId")int studentId,@RequestParam("batchNumber") String batchNumber,Model m)
+	{
+		ss.updatebatchNumber(studentId ,batchNumber);
+		List<Student>list=ss.getAllStudents();
+	m.addAttribute("data", list);
+		return "adminscreen";
+		
+	}
+	
 }
+
