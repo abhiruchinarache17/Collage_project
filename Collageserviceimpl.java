@@ -1,69 +1,67 @@
-package equ.cjc.springcollageapplication.Collageserviceimpl;
+package equ.cjc.StudentManagement.serviceimpl;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
-import equ.cjc.springcollageapplication.Model.Collage;
-import equ.cjc.springcollageapplication.Repositary.CollageRepositary;
-import equ.cjc.springcollageapplication.serviceI.CollageserviceI;
+import equ.cjc.StudentManagement.model.Student;
+import equ.cjc.StudentManagement.repository.Studentrepository;
+import equ.cjc.StudentManagement.service.Studentservice;
 
-public class Collageserviceimpl <Pageable> implements CollageserviceI
+@Service
+public class Studentserviceimpl implements Studentservice
 {
+	
 	@Autowired
-     CollageRepositary sr;
-
-
+	private Studentrepository sr;
 	@Override
-	public void saveCollage(Collage c) {
-		sr.save(c);
-		
+	public void saveData(Student s)
+	{
+		sr.save(s);
 	}
-
 	@Override
-	public List<Collage> logieCollage(String username, String password) {
-		if(username.equals("ADMIN") && password.equals("ADMIN"))
-		{
-			return (List<Collage>)  sr.findAll(PageRequest.of(0, 2)).toList();//change
-			
-		}
-		else {
-			return sr.findByUsernameAndPassword(username, password);
-			
-		}
-	}
-
-	@Override
-	public List<Collage> pagingCollage(int pageNo) {
-		PageRequest pageable =  PageRequest.of(pageNo,2,Sort.by("name").ascending());
-		return sr.findAll(pageable).toList();
-		
-	}
-
-	@Override
-	public List<Collage> deleteStudent(int rollno) {
-         sr.deleteData(rollno);
+	public List<Student> getAllStudents() {
 		
 		return sr.findAll();
-		
 	}
-
 	@Override
-	public Collage editStudent(int rollno) {
-		Optional <Collage> op =sr.findByAdministrator(rollno);
-		return op.get();
-		
-	}
+	public List<Student> getStudentByBatch(String batchNumber) {
 
-	@Override
-	public List<Collage> updateCollage(Collage c) {
-		sr.UpdateData(c.getAdministrator(),c.getFacultyMember(),c.getStudent());
-		return sr.findAll();
-		
+		return sr.findAllByBatchNumber(batchNumber);
 	}
 	
+	@Override
+	public Student getsingleStudent(int studentId) 
+	{
+		//Optional<Student> opStudent=sr.findById(studentId);
+		
+		return sr.findById(studentId).get();
+	}
+	@Override
+	public void updateStudentFess(int studentId, double ammount) {
+		Student s = sr.findById(studentId).get();
+		s.setFessPaid(s.getFessPaid()+ammount);
+		
+	}
+	@Override
+	public void updatebatchNumber(int studentId, String batchNumber) {
+		List<Student> s = sr.findAllByBatchNumber(batchNumber);
+	
 
+	
+	//@Override
+	//public void updatebatchMode(String batchMode, String batchMode2) {
+		// TODO Auto-generated method stub
+		
+	}
+		
+	
+	
+	
+	
+	
+
+	//}
 }
