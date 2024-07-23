@@ -8,7 +8,7 @@ public class CollageapplicationApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CollageapplicationApplication.class, args);
-		System.out.println("collage application");
+		System.out.println("Student project");
 	}
 
 }
